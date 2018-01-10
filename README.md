@@ -6,7 +6,8 @@ The most useful are probably:
 - the level- and factor-handling functions in utils.factors.R, 
 - the easy regex functions in utils_regex.R, 
 - the mapped logic functions in utils_logicals.R, 
-- and the infix operators in utils_general.R among others. 
+- the infix operators in utils_general.R, 
+- and the simple script (utils_standard.R) that loads them all in the correct order. 
 
 Enjoy!
 
