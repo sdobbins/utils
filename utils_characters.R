@@ -236,7 +236,7 @@ proper_noun_phrases <- function(lines) {
 
 ### Comma adders
 
-add_commas <- function(number) {
+commas_string <- function(number) {
   if (is.finite(number)) {
     abs_number <- abs(number)
     if (abs_number > 1) {
@@ -275,7 +275,7 @@ add_commas <- function(number) {
 }
 
 # note: this assumes non-negative finite integers as inputs
-add_commas_vectorized <- function(numbers) {
+commas_strings <- function(numbers) {
   numbers_strings <- as.character(numbers)
   
   nums_digits <- if_else(numbers < 10, 1, ceiling(log10(numbers)))
@@ -298,9 +298,9 @@ add_commas_vectorized <- function(numbers) {
 
 ### Articles
 
-fix_articles <- function(string, invariate_plurals) {
+fix_article <- function(string, invariate_plurals) {
   l <- nchar(string)
-  if (substr(string, l, l) == "s" | substr(string, 1, 2) == "a " | string %in% invariate_plurals) {
+  if (endsWith(string, "s") | startsWith(string, "a ") | string %in% invariate_plurals) {
     return (string)
   } else if (substr(string, 1, 1) %in% vowels) {
     return (paste("an", string))
@@ -309,10 +309,10 @@ fix_articles <- function(string, invariate_plurals) {
   }
 }
 
-fix_articles_vectorized <- function(strings, invariate_plurals) {
+fix_articles <- function(strings, invariate_plurals) {
   lengths <- nchar(strings)
-  needs_article <- !(substr(strings, lengths, lengths) == "s" | 
-    substr(strings, 1, 2) == "a " | 
+  needs_article <- !(endsWith(strings, "s") | 
+    startsWith(strings, "a ") | 
     strings %in% invariate_plurals)
   starts_with_vowel <- substr(strings, 1, 1) %in% vowels
   strings[needs_article & starts_with_vowel] <- paste("an", strings[needs_article & starts_with_vowel])
