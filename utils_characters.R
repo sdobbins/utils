@@ -323,9 +323,6 @@ fix_articles <- function(strings, invariate_plurals) {
 
 ### Dictionary Functions ----------------------------------------------------
 
-#dictionary_10k <- read.csv('../words/10k most common English words.txt', header = FALSE, stringsAsFactors = FALSE)[["V1"]]
-dictionary_20k <- read.csv('~/Developer/RStudio/words/20k most common English words.txt', header = FALSE, stringsAsFactors = FALSE)[["V1"]]
-
 are_valid_words <- function(words, dictionary) {
   return (words %in% dictionary)
 }

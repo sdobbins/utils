@@ -1,6 +1,6 @@
 # @author Scott Dobbins
-# @version 0.9.9.6
-# @date 2017-11-19 01:00
+# @version 0.9.9.7
+# @date 2018-01-13 20:00
 
 
 ### Package Functions -------------------------------------------------------
@@ -17,9 +17,9 @@ is_package_loaded <- function(package_name) {
 
 ### Piping ------------------------------------------------------------------
 
-if (is_package_installed("pipeR")) {
+if (is_package_loaded("pipeR")) {
   # overwrite the magrittr pipe (%>%) with the better pipeR pipe (normally %>>%)
-  `%>%` <- pipeR::`%>>%`
+  `%>%` <- `%>>%`
 }
 
 
