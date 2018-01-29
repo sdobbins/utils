@@ -89,39 +89,39 @@ gregexprs <- function(strings, patterns, exacts = FALSE) {
 ### Simple Repeats
 
 possible <- function(strings) {
-  return (paste0(capturing_group(strings), "?"))
+  return (paste0(non_capturing_group(strings), "?"))
 }
 
 multiple <- function(strings) {
-  return (paste0(capturing_group(strings), "+"))
+  return (paste0(non_capturing_group(strings), "+"))
 }
 
 some <- function(strings) {
-  return (paste0(capturing_group(strings), "*"))
+  return (paste0(non_capturing_group(strings), "*"))
 }
 
 ### Complex Repeats
 
 as_many_of <- function(strings, spacing = " ") {
-  return (paste0(capturing_group(paste0(strings, spacing, "?")), "*"))
+  return (paste0(non_capturing_group(paste0(strings, spacing, "?")), "*"))
 }
 
 n_or_fewer <- function(strings, n) {
-  return (paste0(capturing_group(strings), "{,", n, "}"))
+  return (paste0(non_capturing_group(strings), "{,", n, "}"))
 }
 
 n_or_more <- function(strings, n) {
-  return (paste0(capturing_group(strings), "{", n, ",}"))
+  return (paste0(non_capturing_group(strings), "{", n, ",}"))
 }
 
 m_to_n <- function(strings, m, n) {
-  return (paste0(capturing_group(strings), "{", m, ",", n, "}"))
+  return (paste0(non_capturing_group(strings), "{", m, ",", n, "}"))
 }
 
 ### Selectors/Modifiers
 
 any_of <- function(strings) {
-  return (capturing_group(paste0(strings, collapse = "|")))
+  return (non_capturing_group(paste0(strings, collapse = "|")))
 }
 
 literal <- function(strings) {
@@ -134,6 +134,10 @@ word <- function(strings) {
 
 capturing_group <- function(strings) {
   return (paste0("(", strings, ")"))
+}
+
+non_capturing_group <- function(strings) {
+  return (paste0("(?:", strings, ")"))
 }
 
 selection_group <- function(strings, not = FALSE) {
@@ -172,21 +176,21 @@ ending_with_word <- function(strings) {
 
 with_preceding <- function(strings, marks = " ", mandatory = FALSE) {
   needs_grouping <- nchar(marks) > 1L
-  marks[needs_grouping] <- capturing_group(marks[needs_grouping])
+  marks[needs_grouping] <- non_capturing_group(marks[needs_grouping])
   if (mandatory) {
-    return (paste0(marks, capturing_group(strings)))
+    return (paste0(marks, non_capturing_group(strings)))
   } else {
-    return (paste0(marks, "?", capturing_group(strings)))
+    return (paste0(marks, "?", non_capturing_group(strings)))
   }
 }
 
 with_following <- function(strings, marks = " ", mandatory = FALSE) {
   needs_grouping <- nchar(marks) > 1L
-  marks[needs_grouping] <- capturing_group(marks[needs_grouping])
+  marks[needs_grouping] <- non_capturing_group(marks[needs_grouping])
   if (mandatory) {
-    return (paste0(capturing_group(strings), marks))
+    return (paste0(non_capturing_group(strings), marks))
   } else {
-    return (paste0(capturing_group(strings), marks, "?"))
+    return (paste0(non_capturing_group(strings), marks, "?"))
   }
 }
 
@@ -302,7 +306,7 @@ remove_words_with_fewer_than_n_letters <- function(strings, n, with_punctuation 
   if (with_punctuation == "") {
     punctuation <- ""
   } else {
-    punctuation <- possible(capturing_group(with_punctuation))
+    punctuation <- possible(non_capturing_group(with_punctuation))
   }
   if (only_lower_case) {
     letters_used <- "[a-z]"
@@ -312,7 +316,7 @@ remove_words_with_fewer_than_n_letters <- function(strings, n, with_punctuation 
     letters_used <- "[A-Za-z]"
   }
   basic_pattern <- paste0(punctuation, word(m_to_n(letters_used, 1L, n - 1L)), punctuation)
-  return (gsub(pattern = paste0(capturing_group(paste0(basic_pattern, " ")), "|", capturing_group(paste0(possible(" "), basic_pattern))), replacement = "", x = strings))
+  return (gsub(pattern = paste0(non_capturing_group(paste0(basic_pattern, " ")), "|", non_capturing_group(paste0(possible(" "), basic_pattern))), replacement = "", x = strings))
 }
 
 
@@ -327,11 +331,11 @@ provide_buffers_around <- function(strings, chars, buffers = " ", exact = FALSE)
     exact <- recycle_arguments(exact, length(chars))
     buffers <- recycle_arguments(buffer, length(buffers))
     for (i in seq_along(chars)) {
-      strings <- gsub(pattern = capturing_group(chars[[i]]), replacement = paste0(buffers[[i]], "\\1", buffers[[i]]), x = strings, fixed = exact[[i]])
+      strings <- gsub(pattern = non_capturing_group(chars[[i]]), replacement = paste0(buffers[[i]], "\\1", buffers[[i]]), x = strings, fixed = exact[[i]])
     }
     return (strings)
   } else {
-    return (gsub(pattern = capturing_group(chars), replacement = paste0(buffers, "\\1", buffers), x = strings, fixed = exact))
+    return (gsub(pattern = non_capturing_group(chars), replacement = paste0(buffers, "\\1", buffers), x = strings, fixed = exact))
   }
 }
 
@@ -340,11 +344,11 @@ remove_buffers_around <- function(strings, chars, buffers = " ", exact = FALSE) 
     exact <- recycle_arguments(exact, length(chars))
     buffers <- recycle_arguments(buffer, length(buffers))
     for (i in seq_along(chars)) {
-      strings <- gsub(pattern = paste0(buffers[[i]], capturing_group(chars[[i]]), buffers[[i]]), replacement = "\\1", x = strings, fixed = exact[[i]])
+      strings <- gsub(pattern = paste0(buffers[[i]], non_capturing_group(chars[[i]]), buffers[[i]]), replacement = "\\1", x = strings, fixed = exact[[i]])
     }
     return (strings)
   } else {
-    return (gsub(pattern = paste0(buffers, capturing_group(chars), buffers), replacement = "\\1", x = strings, fixed = exact))
+    return (gsub(pattern = paste0(buffers, non_capturing_group(chars), buffers), replacement = "\\1", x = strings, fixed = exact))
   }
 }
 
