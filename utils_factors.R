@@ -60,23 +60,35 @@ NA_index <- function(fact, NA_level = NA_character_) {
 
 ### Helpers -----------------------------------------------------------------
 
+# best versions of the factor functions set levels (and names) by reference using data.table::setattr
 if (is_package_installed("data.table")) {
-  # best versions of the factor functions set levels (and names) by reference using data.table::setattr
-  re_name <- function(vec, new_names) {
-    data.table::setattr(vec, "names", new_names)
-  }
-  
-  re_level <- function(vec, new_levels, NA_level = NA_character_) {
-    data.table::setattr(vec, "levels", fix_NA_levels(new_levels, NA_level = NA_level))
+  # function call is faster without :: reference
+  if (is_package_loaded("data.table")) {
+    re_name <- function(vec, new_names) {
+      setattr(vec, "names", new_names)
+    }
+    re_level <- function(vec, new_levels, NA_level = NA_character_) {
+      setattr(vec, "levels", fix_NA_levels(new_levels, NA_level = NA_level))
+    }
+  } else {
+    re_name <- function(vec, new_names) {
+      data.table::setattr(vec, "names", new_names)
+    }
+    re_level <- function(vec, new_levels, NA_level = NA_character_) {
+      data.table::setattr(vec, "levels", fix_NA_levels(new_levels, NA_level = NA_level))
+    }
   }
 } else {
   re_name <- function(vec, new_names) {
+    global_vec_name <- deparse(substitute(vec))
     names(vec) <- new_names
+    assign(global_vec_name, vec, envir = parent.frame())
     invisible(vec)
   }
-  
   re_level <- function(vec, new_levels) {
+    global_vec_name <- deparse(substitute(vec))
     levels(vec) <- new_levels
+    assign(global_vec_name, vec, envir = parent.frame())
     invisible(vec)
   }
 }
