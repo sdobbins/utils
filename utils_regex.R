@@ -83,6 +83,22 @@ gregexprs <- function(strings, patterns, exacts = FALSE) {
   return (results)
 }
 
+begins_with <- function(strings, pattern) {
+  return (grepl(x = strings, pattern = beginning_with(pattern)))
+}
+
+begins_with_word <- function(strings, pattern) {
+  return (grepl(x = strings, pattern = beginning_with_word(pattern)))
+}
+
+ends_with <- function(strings, pattern) {
+  return (grepl(x = strings, pattern = ending_with(pattern)))
+}
+
+ends_with_word <- function(strings, pattern) {
+  return (grepl(x = strings, pattern = ending_with_word(pattern)))
+}
+
 
 ### Regex Helpers -----------------------------------------------------------
 
@@ -155,20 +171,20 @@ selection_group <- function(strings, not = FALSE) {
   }
 }
 
-beginning_with <- function(strings) {
-  return (paste0("^", strings))
+beginning_with <- function(patterns) {
+  return (paste0("^", patterns))
 }
 
-beginning_with_word <- function(strings) {
-  return (paste0("^", strings, "\\b"))
+beginning_with_word <- function(patterns) {
+  return (paste0("^", patterns, "\\b"))
 }
 
-ending_with <- function(strings) {
-  return (paste0(strings, "$"))
+ending_with <- function(patterns) {
+  return (paste0(patterns, "$"))
 }
 
-ending_with_word <- function(strings) {
-  return (paste0("\\b", strings, "$"))
+ending_with_word <- function(patterns) {
+  return (paste0("\\b", patterns, "$"))
 }
 
 
